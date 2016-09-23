@@ -1,10 +1,16 @@
-package Walk;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 
-public class Animation extends JPanel {
+/**
+ * Created by Schokomonsterchen on 22.09.2016.
+ */
+public class Player extends JPanel {//implements Tickable {
 
+
+    // todo: Use arrays (or Vectors or Lists)
     private Image walk1;
     private Image walk2;
     private Image walk3;
@@ -67,44 +73,62 @@ public class Animation extends JPanel {
     private Image walk60;
     private Image jumpImage;
     int distance;
+    int movement;
     boolean jump;
+    int countJump;
     boolean slide;
+    Timer timer;
 
 
-    public Animation(){
+    public Player(){
+        setFocusable(true);
         loadAllImages();
         distance = 0;
-        jump = false;
+        movement = 0;
+    /*    jump = false;
+        countJump = 0;
         slide = false;
-    }
+   */}
 
-    public void move(int run) {
-        if(run == 1 || run == -1) {
-            distance += run;
-        } else {
-            if(run == 2){
-                slide = true;
-            } else if(run == -2) {
-                jump = true;
+
+    /*    public void tick() {
+            if(run == 1 || run == -1) {
+                distance += run;
+            } else {
+                if(run == 2){
+                    slide = true;
+                } else if(run == -2) {
+                    jump = true;
+                }
             }
-        }
-        repaint();
+          repaint();
+    }
+    */
+
+    public void setMovement(int newMovement) {
+        movement = newMovement;
     }
 
     public void paint(Graphics graphics) {
         super.paint(graphics);
-        if (jump || slide) {
-            for (int high = 50; high < 101; high += 10) {
-                graphics.drawImage(jumpImage, high, 100, this);
-                wait(5);
-            }
-            for (int high = 100; high > 49; high -= 10) {
-                graphics.drawImage(jumpImage, high, 100, this);
-                wait(5);
-            }
-        } else {
-            graphics.drawImage(walkImage(), 50, 100, this);
+        if(movement == 1 || movement == -1) {
+            distance += movement;
         }
+       /* if (jump) {
+            if(countJump == 0) {
+                countJump = 50;
+                graphics.drawImage(jumpImage, countJump, 100, this);
+                countJump = 60;
+            } else if(countJump > 50) {
+                //if(countJump < )
+            }
+        } else if (slide){
+
+        } else {
+         */
+
+            graphics.drawImage(walkImage(), 50, 100, this);
+        //}
     }
 
     private Image walkImage() {
@@ -234,7 +258,9 @@ public class Animation extends JPanel {
             return walk59;
         } else if (step == 0) {
             return walk60;
-        } else return null;
+        } else {
+            return null;
+        }
 
     }
 
@@ -299,12 +325,18 @@ public class Animation extends JPanel {
         walk58 = loadImage("Walk", "58");
         walk59 = loadImage("Walk", "59");
         walk60 = loadImage("Walk", "60");
+        //jumpImage = loadImage("Jump", "jump");
     }
 
     private Image loadImage(String folder, String name) {
-        String path = folder + "/" + name + ".png";
-        ImageIcon imageIcon = new ImageIcon(getClass().getResource(path));
-        return imageIcon.getImage();
-    }
+        try {
+            String path = folder + "/" + name + ".png";
+            ImageIcon imageIcon = new ImageIcon(getClass().getResource(path));
+            return imageIcon.getImage();
+        } catch (NullPointerException nullP) {
+            ;
+        }
 
+        return null;
+    }
 }

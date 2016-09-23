@@ -22,7 +22,6 @@ public class Frame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1920,685);//1500,400);
         this.setLayout(null);
-        this.add(new GUI());
 
         this.setVisible(true);
     }
