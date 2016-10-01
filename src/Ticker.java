@@ -1,6 +1,5 @@
 //import Walk.Animation;
 
-import sun.org.mozilla.javascript.internal.Synchronizer;
 
 import javax.swing.*;
 import javax.swing.Timer;
