@@ -7,107 +7,105 @@ import java.awt.event.KeyEvent;
 
 public class Objects extends JPanel implements ActionListener {// implements Tickable {
 
-    Background background;
-    Player player;
-
-
-
-    int key;
-    private Image background1;
-    private Image background2;
-
-    Timer timer;
+    private Background background;
+    private GoodFly goodFly;
+    private BadFly badFly;
+    private Player player;
+    private int key;
+    private Score score;
+    private int speed;
+    private Timer timer;
 
 
     public Objects() {
         setFocusable(true);
-        background = new Background();
+        background = new Background(score);
+        goodFly = new GoodFly();
+        badFly = new BadFly();
         player = new Player();
         key = 0;
-        loadAllImages();
         this.addKeyListener(new KeyActionListener());
-        timer = new Timer(5, this);
+        score = new Score();
+        speed = 5;
+        timer = new Timer(speed, this);
         timer.start();
 
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent event) {
+        score.setTimeUp();
         repaint();
     }
 
-    /*    public void tick() {
-            repaint();
-        }
-
-        public void setMovement(int newMovement) {
-            movement = newMovement;
-        }
-      */
     @Override
     public void paint(Graphics graphics) {
         super.paint(graphics);
         background.paint(graphics);
+        score.setDistance(background.getMovement());
+        goodFly.paint(graphics);
+        for(int x = 0; x < goodFly.getMessages(); x++) {
+            score.setMessageUp();
+        }
+        for(int x = 0; x < goodFly.getNoMessages(); x++) {
+            score.setNoMessageUp();
+        }
+        badFly.paint(graphics);
         player.paint(graphics);
-        /*int movement = 0;
-        if(movement == 1 || movement == -1) {
-            picture += movement;
+        if (score.getMessage() > 20 * score.getLevel()) {
+            timer.stop();
+            speed--;
+            timer = new Timer(speed, this);
+            timer.start();
         }
-        if (picture == fixPicture + 3500) {
-            fixPicture = picture;
-            x = x-2;
-        } else if (picture == fixPicture - 3500) {
-            fixPicture = picture;
-            x = x+2;
+        if(score.getMessage() > (5 * score.getLevel())) {
+            score.setLevelUp();
+            goodFly.setLevel(score.getLevel());
         }
-        for(int y = 0; y < 3; y++) {
-            graphics.drawImage(background1, picture + (1750*(x-2+(2*y))) , 0, this);
-            graphics.drawImage(background2, picture + (1750*(x-1+(y*2))), 0, this);
-        }
-          */
+
     }
 
 
     private class KeyActionListener extends KeyAdapter {
-        public KeyActionListener() {
-            System.out.println("KeyActionListener");
-        }
         public void keyPressed(KeyEvent event) {
             key = event.getKeyCode();
             if (key == KeyEvent.VK_UP){
-                background.setMovement(-2);
-                player.setMovement(-2);
+                player.jump();
+                player.tryDoubleJump();
+                goodFly.jump();
+                goodFly.tryDoubleJump();
             } else if (key == KeyEvent.VK_DOWN){
-                background.setMovement(2);
-                player.setMovement(2);
+                player.slide();
+                badFly.slide();
             } else if(key == KeyEvent.VK_LEFT){
                 background.setMovement(1);
                 player.setMovement(1);
+                goodFly.setMovement(1);
+                badFly.setMovement(1);
             } else if(key == KeyEvent.VK_RIGHT){
                 background.setMovement(-1);
                 player.setMovement(-1);
+                goodFly.setMovement(-1);
+                badFly.setMovement(-1);
             }
 
         }
         public void keyReleased(KeyEvent event) {
             key = event.getKeyCode();
-            if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
+            if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT) {
                 background.setMovement(0);
                 player.setMovement(0);
+                goodFly.setMovement(0);
+                badFly.setMovement(0);
+            } else if(key == KeyEvent.VK_UP) {
+                player.tryJump();
+                goodFly.tryJump();
             }
         }
     }
 
-
-
-    private void loadAllImages() {
-        background1 = loadImage("Background", "image001");
-        background2 = loadImage("Background", "image002");
+    public Score getScore() {
+        return score;
     }
 
-    private Image loadImage(String folder, String name) {
-        String path = folder + "/" + name + ".png";
-        ImageIcon imageIcon = new ImageIcon(getClass().getResource(path));
-        return imageIcon.getImage();
-    }
 }

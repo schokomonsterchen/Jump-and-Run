@@ -1,9 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class Background extends JPanel {
 
@@ -12,14 +8,11 @@ public class Background extends JPanel {
     int picture;
     int fixPicture;
     int x;
-    int key;
     private Image background1;
     private Image background2;
 
-    Timer timer;
 
-
-    public Background() {
+    public Background(Score newScore) {
         setFocusable(true);
         movement = 0;
         picture = 0;
@@ -31,7 +24,7 @@ public class Background extends JPanel {
     @Override
     public void paint(Graphics graphics) {
         super.paint(graphics);
-        if(movement == 1 || movement == -1) {
+        if(movement != 0) {
             picture += movement;
         }
         if (picture == fixPicture + 3500) {
@@ -52,6 +45,11 @@ public class Background extends JPanel {
         movement = newMovement;
     }
 
+    public int getPicture() {
+        return picture;
+    }
+
+
     private void loadAllImages() {
         background1 = loadImage("Background", "image001");
         background2 = loadImage("Background", "image002");
@@ -61,5 +59,9 @@ public class Background extends JPanel {
         String path = folder + "/" + name + ".png";
         ImageIcon imageIcon = new ImageIcon(getClass().getResource(path));
         return imageIcon.getImage();
+    }
+
+    public int getMovement() {
+        return movement;
     }
 }

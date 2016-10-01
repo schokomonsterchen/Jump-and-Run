@@ -9,18 +9,18 @@ public class Frame extends JFrame {
     private JButton adjustments;
     private JButton info;
     private JButton end;
+    private Window window;
 
     public Frame(String title) {
         super(title);
         setFrame();
         setButtons();
-
-
+        window = null;
     }
 
     private void setFrame() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1920,685);//1500,400);
+        this.setSize(1920,685);
         this.setLayout(null);
 
         this.setVisible(true);
@@ -33,7 +33,7 @@ public class Frame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 if (event.getSource() == (open)) {
-                    Window window = new Window("Paultierland");
+                    window = new Window("Paultierland");
                 }
             }
         });
@@ -57,7 +57,12 @@ public class Frame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 if (event.getSource().equals(info)) {
-                    InfoBox infoBox = new InfoBox();
+                    InfoBox infoBox;
+                    if(window == null) {
+                        infoBox = new InfoBox(new Score());
+                    } else {
+                        infoBox = new InfoBox(window.getScore());
+                    }
                 }
             }
         });
